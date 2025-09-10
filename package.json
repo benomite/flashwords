@@ -1,0 +1,50 @@
+{
+  "name": "flashwords",
+  "version": "1.0.0",
+  "description": "Application d'exercice de lecture rapide pour l'orthophonie",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "dist": "npm run build"
+  },
+  "keywords": [
+    "orthophonie",
+    "lecture-rapide",
+    "exercice",
+    "education"
+  ],
+  "author": "FlashWords Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.flashwords.app",
+    "productName": "FlashWords",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules",
+      "!dist",
+      "!*.md"
+    ],
+    "mac": {
+      "category": "public.app-category.education",
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

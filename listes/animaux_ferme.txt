@@ -1,0 +1,11 @@
+vache
+cochon
+mouton
+-----
+poule
+canard
+oie
+-----
+cheval
+âne
+chèvre

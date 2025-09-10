@@ -1,0 +1,11 @@
+stéthoscope
+thermomètre
+tensiomètre
+-----
+symptôme
+diagnostic
+traitement
+-----
+médecin
+infirmière
+patient

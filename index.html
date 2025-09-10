@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashWords - Exercice de Lecture Rapide</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app">
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+
+                <!-- Exercise Configuration -->
+                <div class="exercise-config" id="exerciseConfig">
+                    <div class="config-content">
+                        <div class="config-header">
+                            <h2>Configuration de l'exercice</h2>
+                        </div>
+
+                        <div class="config-body">
+                            <div class="config-section">
+                                <h3><i class="fas fa-list"></i> Liste de mots</h3>
+                                <div class="form-group">
+                                    <label for="configWordListSelect">Choisissez une liste de mots</label>
+                                    <div class="list-selection">
+                                        <select id="configWordListSelect" class="form-select">
+                                            <option value="default">Liste par défaut</option>
+                                        </select>
+                                        <button class="btn btn-outline" id="manageListsBtn">
+                                            <i class="fas fa-list"></i>
+                                            Gérer les listes
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="list-preview" id="listPreview">
+                                    <h4>Aperçu de la liste :</h4>
+                                    <div class="preview-content" id="previewContent">
+                                        Aucune liste sélectionnée
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-section">
+                                <h3><i class="fas fa-tachometer-alt"></i> Paramètres de vitesse</h3>
+                                <div class="form-group">
+                                    <label for="configSpeedSlider">Durée d'affichage d'un mot</label>
+                                    <div class="speed-control">
+                                        <input type="range" id="configSpeedSlider" min="200" max="3000" value="1000" step="100" class="speed-slider">
+                                        <div class="speed-display">
+                                            <span id="configSpeedValue">1000ms</span>
+                                            <div class="speed-presets">
+                                                <button type="button" class="btn btn-small btn-outline" data-speed="500">Très rapide</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-speed="1000">Rapide</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-speed="1500">Normal</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-speed="2000">Lent</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-speed="3000">Très lent</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="configDelaySlider">Temps entre les mots</label>
+                                    <div class="speed-control">
+                                        <input type="range" id="configDelaySlider" min="0" max="2000" value="200" step="50" class="speed-slider">
+                                        <div class="speed-display">
+                                            <span id="configDelayValue">200ms</span>
+                                            <div class="speed-presets">
+                                                <button type="button" class="btn btn-small btn-outline" data-delay="0">Aucun délai</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-delay="200">Court</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-delay="500">Moyen</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-delay="1000">Long</button>
+                                                <button type="button" class="btn btn-small btn-outline" data-delay="2000">Très long</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-section">
+                                <h3><i class="fas fa-random"></i> Options d'affichage</h3>
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="configShuffleWords" checked>
+                                        <span>Mélanger les mots</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="configFontSize">Taille de police :</label>
+                                    <div class="font-size-controls">
+                                        <input type="range" id="configFontSizeSlider" min="24" max="120" value="48" step="4">
+                                        <span id="configFontSizeValue">48px</span>
+                                    </div>
+                                    <div class="font-size-presets">
+                                        <button type="button" class="btn btn-sm" data-font-size="32">Petite</button>
+                                        <button type="button" class="btn btn-sm" data-font-size="48">Normale</button>
+                                        <button type="button" class="btn btn-sm" data-font-size="64">Grande</button>
+                                        <button type="button" class="btn btn-sm" data-font-size="80">Très grande</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="config-footer">
+                            <button class="btn btn-primary btn-large" id="startExerciseBtn">
+                                <i class="fas fa-play"></i>
+                                Démarrer l'exercice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise Mode -->
+                <div class="exercise-mode hidden" id="exerciseMode">
+                    <div class="exercise-header">
+                        <div class="word-counter" id="wordCounter">0 mots</div>
+                    </div>
+                    <div class="word-display-container">
+                        <div class="word-display" id="wordDisplay">
+                            <span id="currentWord">Prêt</span>
+                        </div>
+                    </div>
+                    <div class="exercise-controls">
+                        <button class="btn btn-outline" id="pauseBtn">
+                            <i class="fas fa-pause"></i>
+                            Pause
+                        </button>
+                        <button class="btn btn-danger" id="stopBtn">
+                            <i class="fas fa-stop"></i>
+                            Arrêter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Word Lists Management -->
+                <div class="lists-management hidden" id="listsManagement">
+                    <div class="management-header">
+                        <div class="header-top">
+                            <button class="btn btn-outline" id="backToWelcomeBtn">
+                                <i class="fas fa-arrow-left"></i>
+                                Retour
+                            </button>
+                            <h2>Gestion des listes de mots</h2>
+                        </div>
+                        <div class="header-bottom">
+                            <div class="current-folder" id="currentFolder">
+                                <i class="fas fa-folder"></i>
+                                <span id="folderPath">Dossier non sélectionné</span>
+                                <button class="btn btn-sm" id="selectFolderBtn">
+                                    <i class="fas fa-folder-open"></i>
+                                    Choisir dossier
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" id="addNewListBtn">
+                                <i class="fas fa-plus"></i>
+                                Nouvelle liste
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lists-container">
+                        <div class="lists-table" id="listsTable">
+                            <div class="table-header">
+                                <div class="col-name">Nom de la liste</div>
+                                <div class="col-words">Mots</div>
+                                <div class="col-actions">Actions</div>
+                            </div>
+                            <div class="table-body" id="listsTableBody">
+                                <!-- Lists will be dynamically added here -->
+                            </div>
+                        </div>
+
+                        <div class="empty-state" id="emptyState">
+                            <i class="fas fa-list"></i>
+                            <h3>Aucune liste</h3>
+                            <p>Commencez par créer votre première liste de mots</p>
+                            <button class="btn btn-primary" id="addFirstListBtn">
+                                <i class="fas fa-plus"></i>
+                                Créer une liste
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input file caché pour l'import -->
+                    <input type="file" id="fileInput" accept=".txt" style="display: none;">
+                </div>
+
+                <!-- Add/Edit List Modal -->
+                <div class="modal hidden" id="listModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="modalTitle">Nouvelle liste</h3>
+                            <button class="btn btn-outline" id="closeModalBtn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="listNameInput">Nom de la liste</label>
+                                <input type="text" id="listNameInput" placeholder="Ex: Mots faciles, Vocabulaire...">
+                            </div>
+                            <div class="form-group">
+                                <label for="wordsInput">Mots (un par ligne, utilisez ----- pour séparer les groupes)</label>
+                                <textarea id="wordsInput" placeholder="mot1&#10;mot2&#10;mot3&#10;-----&#10;groupe2&#10;groupe3" rows="15"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline" id="cancelBtn">Annuler</button>
+                            <button class="btn btn-primary" id="saveListBtn">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercise Settings Modal -->
+                <div class="modal hidden" id="settingsModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Paramètres de l'exercice</h3>
+                            <button class="btn btn-outline" id="closeSettingsBtn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="settings-grid">
+                                <div class="setting-card">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="setting-content">
+                                        <h4>Vitesse d'affichage</h4>
+                                        <p>Contrôlez la vitesse d'apparition des mots</p>
+                                        <input type="range" id="modalSpeedSlider" min="200" max="3000" value="1000" step="100">
+                                        <span id="modalSpeedValue">1000ms</span>
+                                    </div>
+                                </div>
+                                <div class="setting-card">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-list"></i>
+                                    </div>
+                                    <div class="setting-content">
+                                        <h4>Liste de mots</h4>
+                                        <p>Choisissez la liste à utiliser</p>
+                                        <select id="modalWordListSelect">
+                                            <option value="default">Liste par défaut</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="setting-card">
+                                    <div class="setting-icon">
+                                        <i class="fas fa-random"></i>
+                                    </div>
+                                    <div class="setting-content">
+                                        <h4>Ordre d'affichage</h4>
+                                        <p>Mélanger les mots ou les garder dans l'ordre</p>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="shuffleWords" checked>
+                                            <span>Mélanger les mots</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline" id="cancelSettingsBtn">Annuler</button>
+                            <button class="btn btn-primary" id="applySettingsBtn">Appliquer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
