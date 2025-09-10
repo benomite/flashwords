@@ -21,7 +21,10 @@
     "exercice",
     "education"
   ],
-  "author": "FlashWords Team",
+  "author": {
+    "name": "FlashWords Team",
+    "email": "contact@flashwords.app"
+  },
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.3.3",
@@ -100,9 +103,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.png",
       "category": "Education",
-      "compression": "maximum",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
