@@ -60,3 +60,6 @@ jspm_packages/
 
 # Electron build artifacts
 out/
+
+# Release files (distributed via GitHub Releases)
+release/
