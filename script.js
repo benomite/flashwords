@@ -210,7 +210,7 @@ class FlashWordsApp {
       this.updateFolderDisplay(this.database.getDirectory());
     }
 
-    await this.loadWordLists();
+    await this.loadWordLists(hasSavedFolder);
 
     // Aller directement à la configuration
     this.showExerciseConfig();
@@ -245,9 +245,10 @@ class FlashWordsApp {
       .addEventListener("change", (e) => this.handleFileImport(e));
     document
       .getElementById("configWordListSelect")
-      .addEventListener("change", (e) =>
-        this.updateListPreview(e.target.value)
-      );
+      .addEventListener("change", (e) => {
+        this.selectWordList(e.target.value);
+        this.updateListPreview(e.target.value);
+      });
     document
       .getElementById("configSpeedSlider")
       .addEventListener("input", (e) => this.updateConfigSpeed(e.target.value));
@@ -331,11 +332,16 @@ class FlashWordsApp {
   }
 
   // Charger les listes de mots depuis la base de données
-  async loadWordLists() {
+  async loadWordLists(autoSelectFirst = true) {
     try {
       this.wordLists = await this.database.loadAllLists();
       console.log(`📚 Total des listes chargées: ${this.wordLists.length}`);
       this.updateWordListSelects();
+
+      // Sélectionner automatiquement la première liste seulement si demandé
+      if (autoSelectFirst && this.wordLists.length > 0) {
+        this.selectWordList(this.wordLists[0].id);
+      }
     } catch (error) {
       console.error("❌ Erreur lors du chargement des listes:", error);
       // Aucune liste disponible en cas d'erreur
@@ -605,7 +611,7 @@ class FlashWordsApp {
       const option = document.createElement("option");
       option.value = list.id;
       option.textContent = list.name;
-      if (list.id === (this.currentList?.id || "default")) {
+      if (this.currentList && list.id === this.currentList.id) {
         option.selected = true;
       }
       listSelect.appendChild(option);
@@ -630,7 +636,11 @@ class FlashWordsApp {
     this.updateFontSizePresets();
 
     // Mettre à jour l'aperçu de la liste
-    this.updateListPreview(this.currentList?.id || "default");
+    if (this.currentList) {
+      this.updateListPreview(this.currentList.id);
+    } else {
+      this.updateListPreview(null);
+    }
 
     // Mettre à jour l'état du bouton démarrer
     this.updateStartButton();
@@ -893,7 +903,14 @@ class FlashWordsApp {
   // Sélectionner une liste de mots
   selectWordList(listId) {
     const list = this.wordLists.find((l) => l.id === listId);
-    if (!list) return;
+
+    if (!list) {
+      // Aucune liste trouvée, réinitialiser
+      this.currentList = null;
+      this.currentWords = [];
+      this.updateStartButton();
+      return;
+    }
 
     this.currentList = list;
     this.currentWords = this.prepareWordsForExercise(list.words);
@@ -1269,6 +1286,18 @@ class FlashWordsApp {
       if (savedFolder) {
         this.database.setDirectory(savedFolder);
         this.updateFolderDisplay(savedFolder);
+
+        // Charger les listes du dossier sauvegardé et sélectionner la première
+        this.wordLists = await this.database.loadAllLists();
+        console.log(
+          `📚 Listes chargées depuis le dossier sauvegardé: ${this.wordLists.length}`
+        );
+        this.updateWordListSelects();
+
+        if (this.wordLists.length > 0) {
+          this.selectWordList(this.wordLists[0].id);
+        }
+
         return true;
       }
     } catch (error) {

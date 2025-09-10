@@ -8,6 +8,7 @@ et ce projet adhère au [Versioning Sémantique](https://semver.org/spec/v2.0.0.
 ## [1.0.0] - 2024-12-19
 
 ### Ajouté
+
 - Application Electron standalone pour exercices de lecture rapide
 - Interface moderne et professionnelle optimisée pour l'orthophonie
 - Exercice de lecture rapide infini avec contrôle total (pause/reprise/arrêt)
@@ -25,6 +26,7 @@ et ce projet adhère au [Versioning Sémantique](https://semver.org/spec/v2.0.0.
 - Styles CSS modernes avec animations fluides
 
 ### Technique
+
 - Architecture Electron avec processus principal et renderer
 - Communication IPC sécurisée entre les processus
 - Gestion des fichiers via l'API Node.js
@@ -32,6 +34,7 @@ et ce projet adhère au [Versioning Sémantique](https://semver.org/spec/v2.0.0.
 - Code modulaire et bien documenté
 
 ### Documentation
+
 - README complet avec instructions d'installation
 - Documentation Electron dédiée
 - Exemples de listes de mots inclus

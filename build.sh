@@ -1,43 +1,59 @@
 #!/bin/bash
-# Script de build pour FlashWords Electron
 
-echo "🚀 Build de FlashWords Electron..."
+# FlashWords - Script de Build Optimisé
+# Usage: ./build.sh [platform]
+# Platform: all, mac, win, linux (défaut: all)
 
-# Vérifier que npm est installé
-if ! command -v npm &> /dev/null; then
-    echo "❌ npm n'est pas installé"
-    exit 1
-fi
+set -e
 
-# Installer les dépendances si nécessaire
-if [ ! -d "node_modules" ]; then
-    echo "📦 Installation des dépendances..."
-    npm install
-fi
+PLATFORM=${1:-all}
+
+echo "🚀 FlashWords - Build Optimisé pour $PLATFORM"
+echo "============================================="
+
+# Nettoyer le dossier dist
+echo "🧹 Nettoyage du dossier dist..."
+rm -rf dist/
+
+# Vérifier que les dépendances sont installées
+echo "📦 Vérification des dépendances..."
+npm install
 
 # Build selon la plateforme
-case "$1" in
-    "win")
-        echo "🪟 Build pour Windows..."
-        npm run build:win
-        ;;
-    "mac")
-        echo "🍎 Build pour macOS..."
-        npm run build:mac
-        ;;
-    "linux")
-        echo "🐧 Build pour Linux..."
-        npm run build:linux
-        ;;
-    "all")
-        echo "🌍 Build pour toutes les plateformes..."
-        npm run build
-        ;;
-    *)
-        echo "📱 Build pour la plateforme actuelle..."
-        npm run build
-        ;;
+case $PLATFORM in
+  "mac")
+    echo "🍎 Build pour macOS..."
+    npx electron-builder --mac
+    ;;
+  "win")
+    echo "🪟 Build pour Windows..."
+    npx electron-builder --win
+    ;;
+  "linux")
+    echo "🐧 Build pour Linux..."
+    npx electron-builder --linux
+    ;;
+  "all")
+    echo "🌍 Build pour toutes les plateformes..."
+    npx electron-builder --win --mac --linux
+    ;;
+  *)
+    echo "❌ Plateforme non reconnue: $PLATFORM"
+    echo "Usage: $0 [all|mac|win|linux]"
+    exit 1
+    ;;
 esac
 
 echo "✅ Build terminé !"
-echo "📁 Fichiers dans le dossier 'dist/'"
+echo "📁 Fichiers générés dans le dossier 'dist/'"
+
+# Lister les fichiers générés
+if [ -d "dist" ]; then
+  echo ""
+  echo "📋 Fichiers générés:"
+  ls -la dist/
+
+  echo ""
+  echo "📊 Taille des builds:"
+  du -sh dist/*
+fi

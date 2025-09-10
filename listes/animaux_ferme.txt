@@ -1,6 +1,7 @@
 vache
 cochon
 mouton
+poney
 -----
 poule
 canard
