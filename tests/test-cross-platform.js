@@ -43,11 +43,11 @@ function testRequiredFiles() {
   console.log('🧪 Test 2: Fichiers requis');
   
   const requiredFiles = [
-    'main.js',
-    'preload.js',
-    'script.js',
-    'index.html',
-    'styles.css',
+    'lib/main.js',
+    'lib/preload.js', 
+    'lib/script.js',
+    'lib/index.html',
+    'lib/styles.css',
     'package.json'
   ];
   
@@ -77,7 +77,7 @@ function testPackageConfig() {
   console.log('🧪 Test 3: Configuration package.json');
   
   try {
-    const packageJson = require('./package.json');
+    const packageJson = require('../package.json');
     
     // Vérifier les scripts de build pour chaque plateforme
     const buildScripts = ['build:win', 'build:mac', 'build:linux'];
@@ -120,7 +120,7 @@ function testElectronDependencies() {
   console.log('🧪 Test 4: Dépendances Electron');
   
   try {
-    const packageJson = require('./package.json');
+    const packageJson = require('../package.json');
     const electronVersion = packageJson.devDependencies?.electron;
     const electronBuilderVersion = packageJson.devDependencies?.['electron-builder'];
     
@@ -150,7 +150,7 @@ function testCodeCompatibility() {
   
   try {
     // Lire le fichier main.js et vérifier les utilisations de path
-    const mainJs = fs.readFileSync('main.js', 'utf8');
+    const mainJs = fs.readFileSync('lib/main.js', 'utf8');
     const pathUsages = mainJs.match(/path\./g) || [];
     
     console.log(`  📊 Utilisations de 'path.' dans main.js: ${pathUsages.length}`);

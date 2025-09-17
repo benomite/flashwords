@@ -2,7 +2,7 @@
   "name": "flashwords",
   "version": "1.0.0",
   "description": "Application d'exercice de lecture rapide pour l'orthophonie",
-  "main": "main.js",
+  "main": "lib/main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -13,7 +13,10 @@
     "build:linux": "electron-builder --linux",
     "dist": "npm run build",
     "clean": "rm -rf dist",
-    "prebuild": "npm run clean"
+    "prebuild": "npm run clean",
+    "test": "node tests/test-app.js",
+    "test:cross-platform": "node tests/test-cross-platform.js",
+    "test:all": "npm run test && npm run test:cross-platform"
   },
   "keywords": [
     "orthophonie",
@@ -37,21 +40,15 @@
       "output": "dist"
     },
     "files": [
-      "main.js",
-      "preload.js",
-      "index.html",
-      "styles.css",
-      "script.js",
+      "lib/**/*",
       "listes/**/*",
       "!node_modules",
       "!dist",
+      "!tests/**/*",
+      "!bin/**/*",
+      "!config/**/*",
       "!*.md",
-      "!build.sh",
-      "!start.sh",
-      "!server.py",
-      "!assets",
-      "!build-all.sh",
-      "!BUILD.md"
+      "!assets"
     ],
     "compression": "maximum",
     "removePackageScripts": true,

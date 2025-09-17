@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Boutons FlashWords</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .logs { background: #000; color: #0f0; padding: 10px; height: 200px; overflow-y: auto; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Test des Boutons FlashWords</h1>
+    
+    <div class="test-section">
+        <h3>Test du bouton "Gérer les listes"</h3>
+        <button id="manageListsBtn">Gérer les listes</button>
+        <button id="backToWelcomeBtn">Retour</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test des sections</h3>
+        <div id="exerciseConfig" style="display: block;">
+            <h4>Configuration de l'exercice</h4>
+            <p>Cette section devrait être visible par défaut</p>
+        </div>
+        <div id="listsManagement" style="display: none;">
+            <h4>Gestion des listes</h4>
+            <p>Cette section devrait apparaître quand on clique sur "Gérer les listes"</p>
+        </div>
+        <div id="exerciseMode" style="display: none;">
+            <h4>Mode exercice</h4>
+            <p>Cette section devrait apparaître pendant l'exercice</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Logs</h3>
+        <div id="logs" class="logs"></div>
+        <button onclick="clearLogs()">Effacer les logs</button>
+    </div>
+
+    <script>
+        function log(message) {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logsDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        // Simuler les fonctions de FlashWords
+        function showListsManagement() {
+            log("🔄 showListsManagement() appelé");
+            document.getElementById("exerciseMode").classList.add("hidden");
+            document.getElementById("exerciseConfig").classList.add("hidden");
+            document.getElementById("listsManagement").classList.remove("hidden");
+            log("✅ Section gestion des listes affichée");
+        }
+
+        function showExerciseConfig() {
+            log("🔄 showExerciseConfig() appelé");
+            document.getElementById("listsManagement").classList.add("hidden");
+            document.getElementById("exerciseMode").classList.add("hidden");
+            document.getElementById("exerciseConfig").classList.remove("hidden");
+            log("✅ Section configuration affichée");
+        }
+
+        // Attacher les événements
+        document.getElementById('manageListsBtn').addEventListener('click', function() {
+            log("🖱️ Bouton 'Gérer les listes' cliqué");
+            showListsManagement();
+        });
+
+        document.getElementById('backToWelcomeBtn').addEventListener('click', function() {
+            log("🖱️ Bouton 'Retour' cliqué");
+            showExerciseConfig();
+        });
+
+        // Ajouter les classes CSS pour les tests
+        const style = document.createElement('style');
+        style.textContent = `
+            .hidden { display: none !important; }
+        `;
+        document.head.appendChild(style);
+
+        log("✅ Page de test chargée");
+        log("📝 Testez les boutons ci-dessus");
+    </script>
+</body>
+</html>
