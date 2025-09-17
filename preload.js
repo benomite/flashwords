@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     basename: (filePath) => ipcRenderer.invoke("path-basename", filePath),
     dirname: (filePath) => ipcRenderer.invoke("path-dirname", filePath),
     extname: (filePath) => ipcRenderer.invoke("path-extname", filePath),
+    sep: () => ipcRenderer.invoke("path-sep"),
+    normalize: (filePath) => ipcRenderer.invoke("path-normalize", filePath),
   },
 
   // Informations sur l'environnement

@@ -18,7 +18,8 @@ function createWindow() {
       enableRemoteModule: false,
       preload: path.join(__dirname, "preload.js"),
     },
-    icon: path.join(__dirname, "assets", "icon.png"), // Optionnel
+    // Icon sera géré par electron-builder selon la plateforme
+    // icon: path.join(__dirname, "assets", "icon.png"), // Optionnel
     title: "FlashWords - Exercice de Lecture Rapide",
     show: false, // Ne pas afficher immédiatement
   });
@@ -130,7 +131,11 @@ ipcMain.handle("show-save-dialog", async (event, options) => {
     return result;
   } catch (error) {
     console.error("Erreur dans show-save-dialog:", error);
-    return { canceled: true, error: error.message };
+    return { 
+      canceled: true, 
+      error: error.message,
+      filePaths: []
+    };
   }
 });
 
@@ -143,7 +148,11 @@ ipcMain.handle("show-open-dialog", async (event, options) => {
     return result;
   } catch (error) {
     console.error("Erreur dans show-open-dialog:", error);
-    return { canceled: true, error: error.message };
+    return { 
+      canceled: true, 
+      error: error.message,
+      filePaths: []
+    };
   }
 });
 
@@ -162,4 +171,14 @@ ipcMain.handle("path-dirname", async (event, filePath) => {
 
 ipcMain.handle("path-extname", async (event, filePath) => {
   return path.extname(filePath);
+});
+
+// Handler pour obtenir le séparateur de chemin de la plateforme
+ipcMain.handle("path-sep", async (event) => {
+  return path.sep;
+});
+
+// Handler pour normaliser les chemins
+ipcMain.handle("path-normalize", async (event, filePath) => {
+  return path.normalize(filePath);
 });

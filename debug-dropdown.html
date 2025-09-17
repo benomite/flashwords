@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Dropdown FlashWords</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        select { padding: 10px; margin: 10px; font-size: 16px; }
+        .preview { background: #f5f5f5; padding: 15px; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Debug Dropdown FlashWords</h1>
+    
+    <div class="debug-section">
+        <h3>Test du dropdown</h3>
+        <select id="testSelect">
+            <option value="">Sélectionnez une option</option>
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+        </select>
+        <button onclick="testDropdown()">Tester le dropdown</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Logs</h3>
+        <div id="logs" style="background: #000; color: #0f0; padding: 10px; height: 200px; overflow-y: auto; font-family: monospace;"></div>
+        <button onclick="clearLogs()">Effacer les logs</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Test des fonctions FlashWords</h3>
+        <button onclick="testSelectWordList()">Test selectWordList</button>
+        <button onclick="testUpdateListPreview()">Test updateListPreview</button>
+    </div>
+
+    <script>
+        // Simuler les données de test
+        const mockWordLists = [
+            {
+                id: "animaux_ferme",
+                name: "Animaux Ferme",
+                words: ["chat", "chien", "oiseau", "-----", "vache", "cochon"],
+                groups: [["chat", "chien", "oiseau"], ["vache", "cochon"]]
+            },
+            {
+                id: "vocabulaire_medical",
+                name: "Vocabulaire Medical",
+                words: ["docteur", "infirmiere", "hopital", "-----", "medicament", "seringue"],
+                groups: [["docteur", "infirmiere", "hopital"], ["medicament", "seringue"]]
+            }
+        ];
+
+        let currentList = null;
+        let currentWords = [];
+
+        function log(message) {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logsDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        function testDropdown() {
+            const select = document.getElementById('testSelect');
+            log(`Dropdown value: ${select.value}`);
+            log(`Dropdown selectedIndex: ${select.selectedIndex}`);
+            log(`Dropdown options count: ${select.options.length}`);
+        }
+
+        // Simuler selectWordList
+        function selectWordList(listId) {
+            log(`🔍 selectWordList appelé avec: ${listId}`);
+            log(`🔍 wordLists disponibles: ${mockWordLists.map(l => l.id).join(', ')}`);
+            
+            const list = mockWordLists.find((l) => l.id === listId);
+
+            if (!list) {
+                log(`❌ Aucune liste trouvée pour l'ID: ${listId}`);
+                currentList = null;
+                currentWords = [];
+                return;
+            }
+
+            log(`✅ Liste trouvée: ${list.name}`);
+            currentList = list;
+            currentWords = list.words.filter((word) => word !== "-----");
+            log(`📝 Mots préparés: ${currentWords.length}`);
+        }
+
+        // Simuler updateListPreview
+        function updateListPreview(listId) {
+            log(`🔄 updateListPreview appelé avec: ${listId}`);
+            const list = mockWordLists.find((l) => l.id === listId);
+            const previewContent = document.getElementById("previewContent");
+
+            if (!previewContent) {
+                log("❌ Élément previewContent non trouvé");
+                return;
+            }
+
+            if (!list) {
+                log("❌ Aucune liste trouvée pour l'aperçu");
+                previewContent.innerHTML = "Aucune liste sélectionnée";
+                return;
+            }
+
+            log(`✅ Liste trouvée pour l'aperçu: ${list.name}`);
+            const words = list.words.filter((word) => word !== "-----");
+            const previewWords = words.slice(0, 10);
+
+            log(`📝 Mots à afficher: ${previewWords.length}`);
+
+            previewContent.innerHTML = `
+                <div class="preview-words">
+                    ${previewWords.map((word) => `<span class="preview-word">${word}</span>`).join("")}
+                    ${words.length > 10 ? `<span class="preview-word">... +${words.length - 10} autres</span>` : ""}
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #999;">
+                    Total: ${words.length} mots en ${list.groups.length} groupe(s)
+                </div>
+            `;
+            
+            log("✅ Aperçu mis à jour");
+        }
+
+        function testSelectWordList() {
+            selectWordList("animaux_ferme");
+        }
+
+        function testUpdateListPreview() {
+            updateListPreview("animaux_ferme");
+        }
+
+        // Test du dropdown
+        document.getElementById('testSelect').addEventListener('change', function(e) {
+            log(`Dropdown changé: ${e.target.value}`);
+        });
+
+        // Créer l'élément previewContent pour les tests
+        const previewDiv = document.createElement('div');
+        previewDiv.id = 'previewContent';
+        previewDiv.className = 'preview';
+        previewDiv.innerHTML = 'Aucune liste sélectionnée';
+        document.body.appendChild(previewDiv);
+
+        log("Debug page chargée");
+    </script>
+</body>
+</html>

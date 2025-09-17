@@ -84,7 +84,8 @@ class DatabaseManager {
       return this.parseFileContent(result.data, filename);
     } catch (error) {
       console.error(`Erreur lors du chargement de ${filename}:`, error);
-      throw error;
+      // Retourner null au lieu de throw pour éviter de casser le chargement des autres listes
+      return null;
     }
   }
 
@@ -214,6 +215,9 @@ class FlashWordsApp {
 
     // Aller directement à la configuration
     this.showExerciseConfig();
+    
+    // Réattacher les événements après le chargement des listes
+    this.bindListEvents();
   }
 
   // Gestion des événements
@@ -243,12 +247,6 @@ class FlashWordsApp {
     document
       .getElementById("fileInput")
       .addEventListener("change", (e) => this.handleFileImport(e));
-    document
-      .getElementById("configWordListSelect")
-      .addEventListener("change", (e) => {
-        this.selectWordList(e.target.value);
-        this.updateListPreview(e.target.value);
-      });
     document
       .getElementById("configSpeedSlider")
       .addEventListener("input", (e) => this.updateConfigSpeed(e.target.value));
@@ -329,6 +327,35 @@ class FlashWordsApp {
 
     // Raccourcis clavier
     document.addEventListener("keydown", (e) => this.handleKeydown(e));
+  }
+
+  // Gestion des événements spécifiques aux listes
+  bindListEvents() {
+    // Événement pour le sélecteur de liste principal
+    const configSelect = document.getElementById("configWordListSelect");
+    if (configSelect) {
+      // Supprimer tous les anciens événements
+      configSelect.removeEventListener("change", this.handleListChange);
+      
+      // Créer une nouvelle fonction de gestion
+      this.handleListChange = (e) => {
+        console.log("🔄 Liste sélectionnée:", e.target.value);
+        console.log("🔄 Événement déclenché sur:", e.target.id);
+        
+        // Vérifier que la valeur a vraiment changé
+        if (e.target.value && e.target.value !== this.currentList?.id) {
+          this.selectWordList(e.target.value);
+          this.updateListPreview(e.target.value);
+        } else {
+          console.log("⚠️ Même liste sélectionnée ou valeur vide");
+        }
+      };
+      
+      configSelect.addEventListener("change", this.handleListChange);
+      console.log("✅ Événement attaché au dropdown");
+    } else {
+      console.log("❌ Élément configWordListSelect non trouvé");
+    }
   }
 
   // Charger les listes de mots depuis la base de données
@@ -648,16 +675,26 @@ class FlashWordsApp {
 
   // Mettre à jour l'aperçu de la liste
   updateListPreview(listId) {
+    console.log("🔄 updateListPreview appelé avec:", listId);
     const list = this.wordLists.find((l) => l.id === listId);
     const previewContent = document.getElementById("previewContent");
 
+    if (!previewContent) {
+      console.log("❌ Élément previewContent non trouvé");
+      return;
+    }
+
     if (!list) {
+      console.log("❌ Aucune liste trouvée pour l'aperçu");
       previewContent.innerHTML = "Aucune liste sélectionnée";
       return;
     }
 
+    console.log("✅ Liste trouvée pour l'aperçu:", list.name);
     const words = list.words.filter((word) => word !== "-----");
     const previewWords = words.slice(0, 10); // Afficher seulement les 10 premiers mots
+
+    console.log("📝 Mots à afficher:", previewWords.length);
 
     previewContent.innerHTML = `
       <div class="preview-words">
@@ -676,6 +713,8 @@ class FlashWordsApp {
         Total: ${words.length} mots en ${list.groups.length} groupe(s)
       </div>
     `;
+    
+    console.log("✅ Aperçu mis à jour");
   }
 
   // Mettre à jour la vitesse de configuration
@@ -774,6 +813,10 @@ class FlashWordsApp {
 
   // Programmer le prochain mot avec pause
   scheduleNextWord() {
+    // Nettoyer les timeouts existants avant d'en créer de nouveaux
+    this.timeoutIds.forEach((id) => clearTimeout(id));
+    this.timeoutIds = [];
+
     // Phase 1: Afficher le mot pendant 'speed' ms
     const timeout1 = setTimeout(() => {
       if (!this.isExerciseRunning || this.isPaused) return;
@@ -902,9 +945,13 @@ class FlashWordsApp {
 
   // Sélectionner une liste de mots
   selectWordList(listId) {
+    console.log("🔍 selectWordList appelé avec:", listId);
+    console.log("🔍 wordLists disponibles:", this.wordLists.map(l => ({id: l.id, name: l.name})));
+    
     const list = this.wordLists.find((l) => l.id === listId);
 
     if (!list) {
+      console.log("❌ Aucune liste trouvée pour l'ID:", listId);
       // Aucune liste trouvée, réinitialiser
       this.currentList = null;
       this.currentWords = [];
@@ -912,9 +959,12 @@ class FlashWordsApp {
       return;
     }
 
+    console.log("✅ Liste trouvée:", list.name);
     this.currentList = list;
     this.currentWords = this.prepareWordsForExercise(list.words);
-    this.updateWordListSelects();
+    console.log("📝 Mots préparés:", this.currentWords.length);
+    
+    // Ne pas appeler updateWordListSelects() ici pour éviter la réinitialisation
     this.updateStartButton();
   }
 
@@ -953,6 +1003,9 @@ class FlashWordsApp {
       const select = document.getElementById(selectId);
       if (!select) return;
 
+      // Sauvegarder la valeur sélectionnée avant de vider
+      const currentValue = select.value;
+      
       select.innerHTML = "";
       this.wordLists.forEach((list) => {
         const option = document.createElement("option");
@@ -960,7 +1013,15 @@ class FlashWordsApp {
         option.textContent = list.name;
         select.appendChild(option);
       });
+      
+      // Restaurer la valeur sélectionnée si elle existe encore
+      if (currentValue && this.wordLists.find(l => l.id === currentValue)) {
+        select.value = currentValue;
+      }
     });
+    
+    // Réattacher les événements après la mise à jour des options
+    this.bindListEvents();
   }
 
   // Afficher le modal d'ajout de liste
@@ -1258,6 +1319,11 @@ class FlashWordsApp {
       // Rafraîchir l'interface
       this.renderListsGrid();
       this.updateWordListSelects();
+
+      // Sélectionner automatiquement la première liste si disponible
+      if (this.wordLists.length > 0) {
+        this.selectWordList(this.wordLists[0].id);
+      }
 
       alert(
         `✅ Dossier sélectionné : ${selectedPath}\n📚 ${this.wordLists.length} liste(s) trouvée(s)`
