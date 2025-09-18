@@ -42,13 +42,13 @@
     "files": [
       "lib/**/*",
       "listes/**/*",
+      "assets/**/*",
       "!node_modules",
       "!dist",
       "!tests/**/*",
       "!bin/**/*",
       "!config/**/*",
-      "!*.md",
-      "!assets"
+      "!*.md"
     ],
     "compression": "maximum",
     "removePackageScripts": true,
@@ -67,7 +67,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.icns",
+      "icon": "assets/logo.png",
       "compression": "maximum",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
@@ -81,7 +81,7 @@
           ]
         }
       ],
-      "icon": "assets/icon.ico",
+      "icon": "assets/logo.png",
       "compression": "maximum",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
@@ -101,6 +101,7 @@
         }
       ],
       "category": "Education",
+      "icon": "assets/logo.png",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {

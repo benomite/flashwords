@@ -247,7 +247,8 @@ body {
     gap: 12px;
 }
 
-#configSpeedValue {
+#configSpeedValue,
+#configDelayValue {
     font-size: 16px;
     font-weight: 600;
     color: #667eea;
