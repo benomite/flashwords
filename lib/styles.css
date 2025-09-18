@@ -738,6 +738,21 @@ body {
     border-color: #667eea;
 }
 
+/* S'assurer que les inputs du modal sont interactifs */
+#listModal input,
+#listModal textarea {
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+#listModal input:not([disabled]),
+#listModal textarea:not([disabled]) {
+    cursor: text !important;
+}
+
 .form-group textarea {
     resize: vertical;
     min-height: 200px;
