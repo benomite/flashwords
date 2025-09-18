@@ -1,6 +1,6 @@
 {
   "name": "flashwords",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Application d'exercice de lecture rapide pour l'orthophonie",
   "main": "lib/main.js",
   "scripts": {
